@@ -78,6 +78,10 @@ A last minute revison of some important data analytics services in AWS for quick
    - Consumers:  Kinesis Data Streams/ Kinesis Data Firehose /Lambda
 - Kinesis Data Analytics provisions capacity in the form of Kinesis Processing Units (KPU). A single KPU provides you with the memory (4 GB + 1 vCPU) and corresponding computing and networking.
 
+![img.png](images/kinesis.png)
+
+
+    
 ## S3 (Simple Storage Service)
 - S3 is a first AWS cloud service from Amazon.It sis used to store any kind of data(i.e.., servers as a data lake).
 - S3 stores data as objects(files) within buckets(buckets).It is a global service.
@@ -173,6 +177,7 @@ A last minute revison of some important data analytics services in AWS for quick
 - Glue Integrations:
     - Sources : S3/DynamoDB/JDBC(on-prem or RDS)
     - Target : Redshift/EMR/Athena/CW for monitoring
+![img.png](images/glue.png)
 
 ## EMR -Elastic Map Reduce
 - EMR is a managed hadoop framework on AWS. It is Hadoop installed on a fleet of EC2 instances which allowa us to run Big Data workloads with vast amount of data
@@ -215,12 +220,16 @@ A last minute revison of some important data analytics services in AWS for quick
     - When you create a cluster and specify the configuration of the master node, core nodes, and task nodes, you have two configuration options. You can use:
           - Instance fleets
           - Instance groups (provides autoscaling)
+
+- Apache DistCp is an open-source tool that you can use to copy large amounts of data. S3DistCp is an extension of DistCp that is optimized to work with AWS, particularly Amazon S3. The command for S3DistCp in Amazon EMR version 4.0 and later is s3-dist-cp, which you add as a step in a cluster or at the command line.
+  Using S3DistCp, you can efficiently copy large amounts of data from Amazon S3 into HDFS where it can be processed by subsequent steps in your Amazon EMR cluster.
+-  EMRFS consistent view tracks the consistency of S3 objects. EMRFS consistent view works by using a DynamoDB table to track objects in Amazon S3 that has been synced with or created by EMRFS. The metadata is just used to track all operations (read, write, update, and copy), and no actual content is stored in it.
 - EMR Integrations:
       - S3 using EMRFS
       - Dynamodb using hive to scan the table and use it for processing
       - Glue Data catalogue for metadata of the tables
-- Apache DistCp is an open-source tool that you can use to copy large amounts of data. S3DistCp is an extension of DistCp that is optimized to work with AWS, particularly Amazon S3. The command for S3DistCp in Amazon EMR version 4.0 and later is s3-dist-cp, which you add as a step in a cluster or at the command line. 
-  Using S3DistCp, you can efficiently copy large amounts of data from Amazon S3 into HDFS where it can be processed by subsequent steps in your Amazon EMR cluster.
+  
+![img.png](images/emr.png)
 
 ## OpenSearch
 - A petabyte scale analysis and reporting service in AWS.Amazon OpenSearch lets you search, analyze, and visualize your data in real-time.It is a cobination of Elastic search and Kibana with integrations to LogStash
@@ -241,6 +250,7 @@ A last minute revison of some important data analytics services in AWS for quick
 - OpenSearch Integrations:
       - Kinesis Data Firehose
       - IOT and CW
+![img.png](images/opensearch.png)
 
 ## Athena
 - A serverless querying tool used to query data in S3 using SQL without loading data into it.
@@ -262,9 +272,13 @@ A last minute revison of some important data analytics services in AWS for quick
      - Stored procedures are not supported.
      - Athena does not support querying the data in the S3 Glacier flexible retrieval or S3 Glacier Deep Archive storage classes.
      - MERGE AND UPDATE Statements are not supported unless you use table_type='ICEBERG'
+- Athena use cases: Amazon Athena is noteworthy due to its simple yet efficient quality. No initial set up is required which makes ad hoc querying easy. 
+  It’s practical for simple read and aggregated queries and is relatively cost effective. Generally, Athena works best for quickly and conveniently running queries at a low cost without needing to set up a complex infrastructure.
 - Athena Integrations:
       - sources: Glue Data Catalog and S3
-      - Targets: Quicksight/JDBC/ODBC tools/Zeppelin notebooks 
+      - Targets: Quicksight/JDBC/ODBC tools/Zeppelin notebooks
+  
+![img.png](images/athena.png)
 
 ## Redshift
 - A petabyte-scale data warehouse service on AWS extends data warehouse queries to your data lake which allows you to run analytic queries against petabytes of data stored locally in Redshift, and directly against exabytes of data stored in S3.
@@ -273,10 +287,10 @@ A last minute revison of some important data analytics services in AWS for quick
 - Redshift currently only supports Single-AZ deployments.
 - Redshift Nodes
     - The leader node receives queries from client applications, parses the queries, and develops query execution plans. It then coordinates the parallel execution of these plans with the compute nodes and aggregates the intermediate results from these nodes. Finally, it returns the results back to the client applications.
-    - Compute nodes execute the query execution plans and transmit data among themselves to serve these queries. The intermediate results are sent to the leader node for aggregation before being sent back to the client applications.
+    - Compute nodes execute the query execution plans and transmit data among themselves to serve these queries. The intermediate results are sent to the leader node for aggregation before being sent back to the client applications. Compute nodes are further divided into slices.
     - Node Type
-         - Dense storage (DS) node type – for large data workloads and use hard disk drive (HDD) storage.
-         - Dense compute (DC) node types – optimized for performance-intensive workloads. Uses SSD storage.
+         - Dense storage (DS) node type – for large data workloads and use hard disk drive (HDD) storage.DS2 nodes allow up to 16TB of HDD storage per node but only at a maximum of 3.30 GB/s of I/O performance.
+         - Dense compute (DC) node types – optimized for performance-intensive workloads. Uses SSD storage.DC2 nodes allow only up to 2.56TB storage per node but with a very high I/O performance of 7.50 GB/s.
          - RA3( Managed storage) - you can choose the number of nodes based on your performance requirements, and only pay for the managed storage that you use.
 - Parameter Groups – a group of parameters that apply to all of the databases that you create in the cluster. The default parameter group has preset values for each of its parameters, and it cannot be modified.
 - By using Enhanced VPC Routing, you can use VPC features to manage the flow of data between your cluster and other resources.
@@ -288,7 +302,20 @@ A last minute revison of some important data analytics services in AWS for quick
         - Ex: create external schema myspectrum_schema from data catalog database 'myspectrum_db' iam_role 'arn:aws:iam::123456789012:role/myspectrum_role'  create external database if not exists; create external table (sales int,listid int) stored as textfile  location 's3://redshift-downloads/tickit/spectrum/sales/';
     - Query your data in Amazon S3
 - Redshift Data Share is a secure way to share live data across Redshift clusters within an AWS account, without the need to copy or move data.Ex: to move data from development to production envs.
-
+- You can use the COPY command to load (or import) data into Amazon Redshift and the UNLOAD command to unload (or export) data from Amazon Redshift.It is the most optimal way of ingesting data into redshift.For better throughput split the input file into chunks equal to or multiple of the number of node slices in the cluster.
+    - Ex: copy customer from 's3://cust' access_key_id <access_key> secret_Access_key <sec_key>
+- Redshift Data Distribution styles:
+     - EVEN - The leader node distributes the rows across the slices in a round-robin fashion, regardless of the values in any particular column. EVEN distribution is appropriate when a table does not participate in joins or when there is not a clear choice between KEY distribution and ALL distribution.
+     - KEY - The rows are distributed according to the values in one column. The leader node places matching values on the same node slice. If you distribute a pair of tables on the joining keys, the leader node collocates the rows on the slices according to the values in the joining columns so that matching values from the common columns are physically stored together.
+     - ALL - A copy of the entire table is distributed to every node. Where EVEN distribution or KEY distribution place only a portion of a table's rows on each node, ALL distribution ensures that every row is collocated for every join that the table participates in. ALL distribution is appropriate only for relatively slow-moving tables; that is, tables that are not updated frequently or extensively.
+     - AUTO - With AUTO distribution, Amazon Redshift assigns an optimal distribution style based on the size of the table data.
+- Redshift workload management provides isolation between different teams of the org to run analytical queries by having queues assigned to each department.You can also include concurrency scaling if required per queue.
+- Redshift scaling/resizing:
+     - Elastic resize – To quickly add or remove nodes from an existing cluster, use elastic resize. You can use it to change the node type, number of nodes, or both. If you only change the number of nodes then queries are temporarily paused and connections are held open if possible. During the resize operation, the cluster is read-only. Typically, elastic resize takes 10–15 minutes. 
+     - Classic resize – Use classic resize to change the node type, number of nodes, or both. Choose this option when you are resizing to a configuration that isn't available through elastic resize. A classic resize copies tables to a new cluster. The source cluster will be in read-only mode until the resize operation finishes. An example is to or from a single-node cluster. During the resize operation, the cluster is read-only. Typically, classic resize takes 2 hours–2 days or longer, depending on your data's size.
+- Amazon Redshift uses a hierarchy of encryption keys to encrypt the database. You can use either AWS Key Management Service (AWS KMS) or a hardware security module (HSM) to manage the top-level encryption keys in this hierarchy.
+- Redshift must be used when  it comes to large, organized, and traditionally relational datasets- it does well with performing aggregations, complex joins, and inner queries. The foundation of Redshift is great for expanding data, and it’s just as simple as adding more clusters. Cost depends on data type and total usage which can create a beneficial predictability for businesses. Overall, Redshift works best for running high-performance complex queries that involve sizeable datasets.
+  ![img.png](images/img.png)
 
 ## QuickSight
 - Amazon QuickSight is a fast business analytics service to build visualizations, perform ad hoc analysis, and quickly get business insights from your data. It is an analytics service that you can use to create datasets, perform one-time analyses, and build visualizations and dashboards. I
